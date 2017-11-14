@@ -54,7 +54,6 @@ func NewGitHubFs(client *github.Client, user string, repo string, branch string)
 	if err != nil {
 		return nil, err
 	}
-	//fmt.Printf("%# v", pretty.Formatter(ghfs.tree))
 	return ghfs, nil
 }
 
@@ -72,14 +71,14 @@ func (fs *githubFs) Create(name string) (afero.File, error) {
 // Mkdir creates a directory in the filesystem, return an error if any
 // happens.
 func (fs *githubFs) Mkdir(name string, perm os.FileMode) error {
-	dir := mem.CreateDir(name)
-	mem.SetMode(dir, perm)
+	// TODO: create virtual in-memory directories?
 	return nil
 }
 
 // MkdirAll creates a directory path and all parents that does not exist
 // yet.
 func (fs *githubFs) MkdirAll(path string, perm os.FileMode) error {
+	// TODO: create virtual in-memory directories?
 	return nil
 }
 
@@ -144,7 +143,7 @@ func (fs *githubFs) Open(name string) (afero.File, error) {
 
 // OpenFile opens a file using the given flags and the given mode.
 func (fs *githubFs) OpenFile(name string, flag int, perm os.FileMode) (afero.File, error) {
-	return nil, nil
+	return fs.Open(name)
 }
 
 // Remove removes a file identified by name, returning an error, if any
@@ -202,13 +201,56 @@ func (fs *githubFs) RemoveAll(path string) error {
 
 // Rename renames a file.
 func (fs *githubFs) Rename(oldname, newname string) error {
-	return nil
+	fs.mu.Lock()
+	defer fs.mu.Unlock()
+	normalOld := strings.TrimPrefix(oldname, "/")
+	normalNew := strings.TrimPrefix(newname, "/")
+	b, _, err := fs.client.Repositories.GetBranch(context.TODO(), fs.user, fs.repo, fs.branch)
+	if err != nil {
+		return err
+	}
+	err = fs.updateTree(b.Commit.Commit.Tree.GetSHA())
+	if err != nil {
+		return err
+	}
+	var entries []github.TreeEntry
+	for _, e := range fs.tree.Entries {
+		if e.GetPath() == normalOld {
+			e.Path = String(normalNew)
+		}
+		e.Content = nil
+		e.URL = nil
+		e.Size = nil
+		entries = append(entries, e)
+	}
+	tree, _, err := fs.client.Git.CreateTree(context.TODO(), fs.user, fs.repo, "", entries)
+	err = fs.updateTree(tree.GetSHA())
+	if err != nil {
+		return err
+	}
+	commit, _, err := fs.client.Git.CreateCommit(context.TODO(), fs.user, fs.repo, &github.Commit{
+		Message: String(CommitMessage),
+		Tree:    tree,
+		Parents: []github.Commit{{SHA: b.GetCommit().SHA}},
+	})
+	_, _, err = fs.client.Git.UpdateRef(context.TODO(), fs.user, fs.repo, &github.Reference{
+		Ref: String("heads/" + b.GetName()),
+		Object: &github.GitObject{
+			SHA: commit.SHA,
+		},
+	}, false)
+	return err
 }
 
 // Stat returns a FileInfo describing the named file, or an error, if any
 // happens.
 func (fs *githubFs) Stat(name string) (os.FileInfo, error) {
-	return nil, nil
+	// TODO: properly
+	f, err := fs.Open(name)
+	if err != nil {
+		return nil, err
+	}
+	return f.Stat()
 }
 
 // The name of this FileSystem
@@ -218,6 +260,7 @@ func (fs *githubFs) Name() string {
 
 //Chmod changes the mode of the named file to mode.
 func (fs *githubFs) Chmod(name string, mode os.FileMode) error {
+	// TODO: NOT YET IMPLEMENTED
 	return nil
 }
 
@@ -241,14 +284,5 @@ func main() {
 		panic(err)
 	}
 
-	//blob, _, _ := client.Git.GetBlob(ctx, "progrium", "go-githubfs", tree.Entries[0].GetSHA())
-	//_, _ := base64.StdEncoding.DecodeString(blob.GetContent())
-	// info, err := afero.ReadDir(fs, "/test/foo")
-	// if err != nil {
-	// 	panic(err)
-	// }
-	err = fs.RemoveAll("/test/")
-	// data, _ := afero.ReadFile(fs, "/test/file1")
-	// os.Stdout.Write(data)
-	fmt.Printf("%# v", pretty.Formatter(err))
+	fmt.Printf("%# v", pretty.Formatter(fs))
 }
