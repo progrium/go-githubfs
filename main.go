@@ -177,8 +177,8 @@ func (fs *githubFs) remove(name string) error {
 func (fs *githubFs) RemoveAll(path string) error {
 	fs.mu.Lock()
 	defer fs.mu.Unlock()
-	normalName := strings.TrimPrefix(path, "/")
-	entry := fs.findEntry(path)
+	normalName := strings.TrimSuffix(strings.TrimPrefix(path, "/"), "/")
+	entry := fs.findEntry(normalName)
 	if entry == nil {
 		return afero.ErrFileNotFound
 	}
@@ -186,9 +186,11 @@ func (fs *githubFs) RemoveAll(path string) error {
 		return fs.remove(path)
 	}
 	// TODO: remove all files in a single commit
-	normalName = strings.TrimSuffix(normalName, "/") + "/"
 	for _, e := range fs.tree.Entries {
-		if strings.HasPrefix(e.GetPath(), normalName) {
+		if e.GetType() == "tree" {
+			continue
+		}
+		if strings.HasPrefix(e.GetPath(), normalName+"/") {
 			err := fs.remove(e.GetPath())
 			if err != nil {
 				return err
@@ -245,7 +247,7 @@ func main() {
 	// if err != nil {
 	// 	panic(err)
 	// }
-	err = fs.RemoveAll("/test/foo")
+	err = fs.RemoveAll("/test/")
 	// data, _ := afero.ReadFile(fs, "/test/file1")
 	// os.Stdout.Write(data)
 	fmt.Printf("%# v", pretty.Formatter(err))
