@@ -2,13 +2,13 @@ package main
 
 import (
 	"context"
+	"encoding/base64"
 	"fmt"
 	"os"
 	"path"
 	"strings"
 	"sync"
 	"time"
-	//"encoding/base64"
 
 	"github.com/google/go-github/github"
 	"github.com/kr/pretty"
@@ -16,6 +16,12 @@ import (
 	"github.com/spf13/afero/mem"
 	"golang.org/x/oauth2"
 )
+
+const CommitMessage = "automatic commit from githubfs 🎆"
+
+func String(s string) *string {
+	return &s
+}
 
 func CreateFile(name string) *mem.File {
 	fileData := mem.CreateFile(name)
@@ -44,13 +50,17 @@ func NewGitHubFs(client *github.Client, user string, repo string, branch string)
 	if err != nil {
 		return nil, err
 	}
-	treeHash := b.Commit.Commit.Tree.GetSHA()
-	ghfs.tree, _, _ = client.Git.GetTree(ctx, user, repo, treeHash, true)
+	err = ghfs.updateTree(b.Commit.Commit.Tree.GetSHA())
 	if err != nil {
 		return nil, err
 	}
 	//fmt.Printf("%# v", pretty.Formatter(ghfs.tree))
 	return ghfs, nil
+}
+
+func (fs *githubFs) updateTree(sha string) (err error) {
+	fs.tree, _, err = fs.client.Git.GetTree(context.TODO(), fs.user, fs.repo, sha, true)
+	return
 }
 
 // Create creates a file in the filesystem, returning the file and an
@@ -73,15 +83,46 @@ func (fs *githubFs) MkdirAll(path string, perm os.FileMode) error {
 	return nil
 }
 
+func (fs *githubFs) findEntry(name string) *github.TreeEntry {
+	normalName := strings.TrimPrefix(name, "/")
+	for _, e := range fs.tree.Entries {
+		if e.GetPath() == normalName {
+			return &e
+		}
+	}
+	return nil
+}
+
 // Open opens a file, returning it or an error, if any happens.
 func (fs *githubFs) Open(name string) (afero.File, error) {
+	fs.mu.Lock()
+	defer fs.mu.Unlock()
+	normalName := strings.TrimPrefix(name, "/")
+	entry := fs.findEntry(name)
+	if entry == nil {
+		return nil, afero.ErrFileNotFound
+	}
+	if entry.GetType() == "blob" {
+		// if file
+		fd := mem.CreateFile(name)
+		mem.SetMode(fd, os.FileMode(int(0644)))
+		f := mem.NewFileHandle(fd)
+		blob, _, err := fs.client.Git.GetBlob(context.TODO(), fs.user, fs.repo, entry.GetSHA())
+		if err != nil {
+			return nil, err
+		}
+		b, _ := base64.StdEncoding.DecodeString(blob.GetContent())
+		f.Write(b)
+		f.Seek(0, 0)
+		return f, nil
+	}
+	// else if tree/dir
 	dir := mem.CreateDir(name)
-	normalDir := strings.TrimPrefix(name, "/")
-	if normalDir == "" {
-		normalDir = "."
+	if normalName == "" {
+		normalName = "."
 	}
 	for _, e := range fs.tree.Entries {
-		if path.Dir(e.GetPath()) != normalDir {
+		if path.Dir(e.GetPath()) != normalName {
 			continue
 		}
 		normalName := strings.TrimPrefix(e.GetPath(), path.Dir(e.GetPath())+"/")
@@ -98,7 +139,6 @@ func (fs *githubFs) Open(name string) (afero.File, error) {
 			continue
 		}
 	}
-
 	return mem.NewFileHandle(dir), nil
 }
 
@@ -110,12 +150,51 @@ func (fs *githubFs) OpenFile(name string, flag int, perm os.FileMode) (afero.Fil
 // Remove removes a file identified by name, returning an error, if any
 // happens.
 func (fs *githubFs) Remove(name string) error {
-	return nil
+	fs.mu.Lock()
+	defer fs.mu.Unlock()
+	return fs.remove(name)
+}
+
+func (fs *githubFs) remove(name string) error {
+	normalName := strings.TrimPrefix(name, "/")
+	entry := fs.findEntry(name)
+	if entry == nil {
+		return afero.ErrFileNotFound
+	}
+	resp, _, err := fs.client.Repositories.DeleteFile(context.TODO(), fs.user, fs.repo, normalName, &github.RepositoryContentFileOptions{
+		Message: String(CommitMessage),
+		SHA:     String(entry.GetSHA()),
+		Branch:  String(fs.branch),
+	})
+	if err != nil {
+		return err
+	}
+	return fs.updateTree(resp.Tree.GetSHA())
 }
 
 // RemoveAll removes a directory path and any children it contains. It
 // does not fail if the path does not exist (return nil).
 func (fs *githubFs) RemoveAll(path string) error {
+	fs.mu.Lock()
+	defer fs.mu.Unlock()
+	normalName := strings.TrimPrefix(path, "/")
+	entry := fs.findEntry(path)
+	if entry == nil {
+		return afero.ErrFileNotFound
+	}
+	if entry.GetType() == "blob" {
+		return fs.remove(path)
+	}
+	// TODO: remove all files in a single commit
+	normalName = strings.TrimSuffix(normalName, "/") + "/"
+	for _, e := range fs.tree.Entries {
+		if strings.HasPrefix(e.GetPath(), normalName) {
+			err := fs.remove(e.GetPath())
+			if err != nil {
+				return err
+			}
+		}
+	}
 	return nil
 }
 
@@ -162,9 +241,12 @@ func main() {
 
 	//blob, _, _ := client.Git.GetBlob(ctx, "progrium", "go-githubfs", tree.Entries[0].GetSHA())
 	//_, _ := base64.StdEncoding.DecodeString(blob.GetContent())
-	info, err := afero.ReadDir(fs, "/test/foo")
-	if err != nil {
-		panic(err)
-	}
-	fmt.Printf("%# v", pretty.Formatter(info))
+	// info, err := afero.ReadDir(fs, "/test/foo")
+	// if err != nil {
+	// 	panic(err)
+	// }
+	err = fs.RemoveAll("/test/foo")
+	// data, _ := afero.ReadFile(fs, "/test/file1")
+	// os.Stdout.Write(data)
+	fmt.Printf("%# v", pretty.Formatter(err))
 }
