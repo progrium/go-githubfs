@@ -1,15 +1,19 @@
 package main
 
 import (
+	"context"
 	"log"
 	"os"
-	"path/filepath"
+
+	"golang.org/x/oauth2"
 
 	"github.com/gohugoio/hugo/deps"
 	"github.com/gohugoio/hugo/hugofs"
 	"github.com/gohugoio/hugo/hugolib"
+	"github.com/google/go-github/github"
+	"github.com/spf13/afero"
 
-  "github.com/progrium/go-githubfs"
+	"github.com/progrium/go-githubfs"
 )
 
 func InitializeConfig() (*deps.DepsCfg, error) {
@@ -19,7 +23,20 @@ func InitializeConfig() (*deps.DepsCfg, error) {
 	// Init file systems. This may be changed at a later point.
 	osFs := hugofs.Os
 
-	config, err := hugolib.LoadConfig(osFs, os.Getenv("HUGO_SOURCE"), os.Getenv("HUGO_CONFIG"))
+	ctx := context.Background()
+	ts := oauth2.StaticTokenSource(
+		&oauth2.Token{AccessToken: os.Getenv("GITHUB_ACCESS_TOKEN")},
+	)
+	tc := oauth2.NewClient(ctx, ts)
+
+	client := github.NewClient(tc)
+
+	fs, err := githubfs.NewGitHubFs(client, "progrium", "go-githubfs", "demo")
+	if err != nil {
+		panic(err)
+	}
+
+	config, err := hugolib.LoadConfig(fs, "/", "/config.toml")
 	if err != nil {
 		return cfg, err
 	}
@@ -27,19 +44,14 @@ func InitializeConfig() (*deps.DepsCfg, error) {
 	// Init file systems. This may be changed at a later point.
 	cfg.Cfg = config
 
+	config.Set("publishDir", "/tmp/public")
 
-	config.Set("publishDir", "public")
+	config.Set("workingDir", "/")
 
-	var dir string
-	if os.Getenv("HUGO_SOURCE") != "" {
-		dir, _ = filepath.Abs(os.Getenv("HUGO_SOURCE"))
-	} else {
-		dir, _ = os.Getwd()
-	}
-	config.Set("workingDir", dir)
+	cfg.Fs = hugofs.NewFrom(osFs, config)
 
-  cfg.Fs = hugofs.NewFrom(osFs, config)
-  cfg.Fs.Source =
+	cfg.Fs.Source = fs
+	cfg.Fs.WorkingDir = afero.NewBasePathFs(afero.NewReadOnlyFs(fs), "/").(*afero.BasePathFs)
 
 	return cfg, nil
 
@@ -47,6 +59,9 @@ func InitializeConfig() (*deps.DepsCfg, error) {
 
 func main() {
 	cfg, err := InitializeConfig()
+	if err != nil {
+		log.Fatal(err)
+	}
 	h, err := hugolib.NewHugoSites(*cfg)
 	if err != nil {
 		log.Fatal(err)
