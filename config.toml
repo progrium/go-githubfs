@@ -1,8 +1,9 @@
-baseurl = "http://hugo.spf13.com/"
+baseurl = "http://localhost:8000/"
 title = "Hugo Themes"
 author = "Steve Francia"
 copyright = "Copyright (c) 2008 - 2014, Steve Francia; all rights reserved."
 canonifyurls = true
 paginate = 3
+theme = "beautifulhugo"
 
 
