@@ -33,13 +33,13 @@
   </url>
   
   <url>
-    <loc>https://progrium.github.io/go-githubfs/tags/development/</loc>
+    <loc>https://progrium.github.io/go-githubfs/categories/development/</loc>
     <lastmod>2014-04-02T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>https://progrium.github.io/go-githubfs/categories/development/</loc>
+    <loc>https://progrium.github.io/go-githubfs/tags/development/</loc>
     <lastmod>2014-04-02T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
@@ -51,13 +51,13 @@
   </url>
   
   <url>
-    <loc>https://progrium.github.io/go-githubfs/tags/golang/</loc>
+    <loc>https://progrium.github.io/go-githubfs/categories/golang/</loc>
     <lastmod>2014-04-02T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>https://progrium.github.io/go-githubfs/categories/golang/</loc>
+    <loc>https://progrium.github.io/go-githubfs/tags/golang/</loc>
     <lastmod>2014-04-02T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
