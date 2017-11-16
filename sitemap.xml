@@ -3,97 +3,97 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>http://localhost:8000/post/creating-a-new-theme/</loc>
+    <loc>https://progrium.github.io/go-githubfs/post/creating-a-new-theme/</loc>
     <lastmod>2014-09-28T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>http://localhost:8000/post/migrate-from-jekyll/</loc>
+    <loc>https://progrium.github.io/go-githubfs/post/migrate-from-jekyll/</loc>
     <lastmod>2014-03-10T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>http://localhost:8000/about/</loc>
+    <loc>https://progrium.github.io/go-githubfs/about/</loc>
     <lastmod>2014-04-09T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>http://localhost:8000/post/goisforlovers/</loc>
+    <loc>https://progrium.github.io/go-githubfs/post/goisforlovers/</loc>
     <lastmod>2014-04-02T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>http://localhost:8000/post/hugoisforlovers/</loc>
+    <loc>https://progrium.github.io/go-githubfs/post/hugoisforlovers/</loc>
     <lastmod>2014-04-02T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>http://localhost:8000/categories/</loc>
+    <loc>https://progrium.github.io/go-githubfs/categories/</loc>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://localhost:8000/tags/development/</loc>
-    <lastmod>2014-04-02T00:00:00+00:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://localhost:8000/categories/development/</loc>
+    <loc>https://progrium.github.io/go-githubfs/tags/development/</loc>
     <lastmod>2014-04-02T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://localhost:8000/tags/go/</loc>
+    <loc>https://progrium.github.io/go-githubfs/categories/development/</loc>
     <lastmod>2014-04-02T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://localhost:8000/tags/golang/</loc>
+    <loc>https://progrium.github.io/go-githubfs/tags/go/</loc>
     <lastmod>2014-04-02T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://localhost:8000/categories/golang/</loc>
+    <loc>https://progrium.github.io/go-githubfs/tags/golang/</loc>
     <lastmod>2014-04-02T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://localhost:8000/tags/hugo/</loc>
+    <loc>https://progrium.github.io/go-githubfs/categories/golang/</loc>
     <lastmod>2014-04-02T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://localhost:8000/</loc>
+    <loc>https://progrium.github.io/go-githubfs/tags/hugo/</loc>
+    <lastmod>2014-04-02T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://progrium.github.io/go-githubfs/</loc>
     <lastmod>2014-09-28T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://localhost:8000/post/</loc>
+    <loc>https://progrium.github.io/go-githubfs/post/</loc>
     <lastmod>2014-09-28T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://localhost:8000/tags/</loc>
+    <loc>https://progrium.github.io/go-githubfs/tags/</loc>
     <lastmod>2014-04-02T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://localhost:8000/tags/templates/</loc>
+    <loc>https://progrium.github.io/go-githubfs/tags/templates/</loc>
     <lastmod>2014-04-02T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://localhost:8000/tags/themes/</loc>
+    <loc>https://progrium.github.io/go-githubfs/tags/themes/</loc>
     <lastmod>2014-04-02T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>

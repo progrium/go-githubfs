@@ -2,66 +2,66 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Tags on Hugo Themes</title>
-    <link>http://localhost:8000/tags/</link>
+    <link>https://progrium.github.io/go-githubfs/tags/</link>
     <description>Recent content in Tags on Hugo Themes</description>
     <generator>Hugo -- gohugo.io</generator>
     <copyright>Copyright (c) 2008 - 2014, Steve Francia; all rights reserved.</copyright>
     <lastBuildDate>Wed, 02 Apr 2014 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="http://localhost:8000/tags/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://progrium.github.io/go-githubfs/tags/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Development</title>
-      <link>http://localhost:8000/tags/development/</link>
+      <link>https://progrium.github.io/go-githubfs/tags/development/</link>
       <pubDate>Wed, 02 Apr 2014 00:00:00 +0000</pubDate>
       
-      <guid>http://localhost:8000/tags/development/</guid>
+      <guid>https://progrium.github.io/go-githubfs/tags/development/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Go</title>
-      <link>http://localhost:8000/tags/go/</link>
+      <link>https://progrium.github.io/go-githubfs/tags/go/</link>
       <pubDate>Wed, 02 Apr 2014 00:00:00 +0000</pubDate>
       
-      <guid>http://localhost:8000/tags/go/</guid>
+      <guid>https://progrium.github.io/go-githubfs/tags/go/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Golang</title>
-      <link>http://localhost:8000/tags/golang/</link>
+      <link>https://progrium.github.io/go-githubfs/tags/golang/</link>
       <pubDate>Wed, 02 Apr 2014 00:00:00 +0000</pubDate>
       
-      <guid>http://localhost:8000/tags/golang/</guid>
+      <guid>https://progrium.github.io/go-githubfs/tags/golang/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Hugo</title>
-      <link>http://localhost:8000/tags/hugo/</link>
+      <link>https://progrium.github.io/go-githubfs/tags/hugo/</link>
       <pubDate>Wed, 02 Apr 2014 00:00:00 +0000</pubDate>
       
-      <guid>http://localhost:8000/tags/hugo/</guid>
+      <guid>https://progrium.github.io/go-githubfs/tags/hugo/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Templates</title>
-      <link>http://localhost:8000/tags/templates/</link>
+      <link>https://progrium.github.io/go-githubfs/tags/templates/</link>
       <pubDate>Wed, 02 Apr 2014 00:00:00 +0000</pubDate>
       
-      <guid>http://localhost:8000/tags/templates/</guid>
+      <guid>https://progrium.github.io/go-githubfs/tags/templates/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Themes</title>
-      <link>http://localhost:8000/tags/themes/</link>
+      <link>https://progrium.github.io/go-githubfs/tags/themes/</link>
       <pubDate>Wed, 02 Apr 2014 00:00:00 +0000</pubDate>
       
-      <guid>http://localhost:8000/tags/themes/</guid>
+      <guid>https://progrium.github.io/go-githubfs/tags/themes/</guid>
       <description></description>
     </item>
     
