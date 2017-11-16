@@ -1,4 +1,4 @@
-baseurl = "http://localhost:8000/"
+baseurl = "https://progrium.github.io/go-githubfs/"
 title = "Hugo Themes"
 author = "Steve Francia"
 copyright = "Copyright (c) 2008 - 2014, Steve Francia; all rights reserved."
